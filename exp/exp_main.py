@@ -270,7 +270,7 @@ class Exp_Main(Exp_Basic):
 
         return
 
-    def predict(self, setting, load=False):
+    def predict(self, setting,folder_path, load=False):
         pred_data, pred_loader = self._get_data(flag='pred')
 
         if load:
@@ -310,10 +310,9 @@ class Exp_Main(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        np.save(folder_path + 'real_prediction.npy', preds)
+        np.save(os.path.join(folder_path , 'real_prediction.npy'), preds)
 
         return
