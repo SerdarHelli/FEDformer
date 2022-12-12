@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--version', type=str, default='Fourier',
                         help='for FEDformer, there are two versions to choose, options: [Fourier, Wavelets]')
 
-   parser.add_argument('--result_path', type=str, required=True,
+    parser.add_argument('--result_path', type=str, required=True,
                         help='Result Path')
 
 
