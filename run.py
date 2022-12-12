@@ -143,7 +143,7 @@ def main():
 
             if args.do_predict:
                 print('>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                exp.predict(setting,folder_path=args.result_path, True)
+                exp.predict(setting,folder_path=args.result_path, load=True)
 
             torch.cuda.empty_cache()
     else:
