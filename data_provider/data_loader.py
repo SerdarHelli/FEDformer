@@ -189,6 +189,7 @@ class Dataset_ETT_minute(Dataset):
         return self.scaler.inverse_transform(data)
 
 
+
 class Dataset_Custom(Dataset):
     def __init__(self, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',
@@ -220,16 +221,18 @@ class Dataset_Custom(Dataset):
 
     def __read_data__(self):
         self.scaler = StandardScaler()
-        df_raw = pd.read_csv(os.path.join(self.root_path,
-                                          self.data_path))
+        df_raw = pd.read_csv("/content/df.csv")
 
         '''
         df_raw.columns: ['date', ...(other features), target feature]
         '''
+        cols_x=['date','Relative Humidity','Global Radiation','Wind Speed','Temperature']
         cols = list(df_raw.columns)
         cols.remove(self.target)
-        cols.remove('date')
-        df_raw = df_raw[['date'] + cols + [self.target]]
+        for x in cols_x:
+          cols.remove(x)
+
+        df_raw = df_raw[['date']+['Relative Humidity'] +['Global Radiation'] +['Wind Speed'] +['Temperature'] + cols + [self.target]]
         # print(cols)
         num_train = int(len(df_raw) * 0.7)
         num_test = int(len(df_raw) * 0.2)
@@ -240,7 +243,7 @@ class Dataset_Custom(Dataset):
         border2 = border2s[self.set_type]
 
         if self.features == 'M' or self.features == 'MS':
-            cols_data = df_raw.columns[1:]
+            cols_data = df_raw.columns[5:]
             df_data = df_raw[cols_data]
         elif self.features == 'S':
             df_data = df_raw[[self.target]]
@@ -253,12 +256,17 @@ class Dataset_Custom(Dataset):
             data = df_data.values
 
         df_stamp = df_raw[['date']][border1:border2]
+
         df_stamp['date'] = pd.to_datetime(df_stamp.date)
         if self.timeenc == 0:
             df_stamp['month'] = df_stamp.date.apply(lambda row: row.month, 1)
             df_stamp['day'] = df_stamp.date.apply(lambda row: row.day, 1)
             df_stamp['weekday'] = df_stamp.date.apply(lambda row: row.weekday(), 1)
             df_stamp['hour'] = df_stamp.date.apply(lambda row: row.hour, 1)
+            df_stamp['Relative Humidity']=df_raw[['Relative Humidity']][border1:border2]
+            df_stamp['Global Radiation']=df_raw[['Global Radiation']][border1:border2]
+            df_stamp['Wind Speed']=df_raw[['Wind Speed']][border1:border2]
+            df_stamp['Temperature']=df_raw[['Temperature']][border1:border2]
             data_stamp = df_stamp.drop(['date'], 1).values
         elif self.timeenc == 1:
             data_stamp = time_features(pd.to_datetime(df_stamp['date'].values), freq=self.freq)
@@ -286,6 +294,7 @@ class Dataset_Custom(Dataset):
 
     def inverse_transform(self, data):
         return self.scaler.inverse_transform(data)
+
 
 
 class Dataset_Pred(Dataset):

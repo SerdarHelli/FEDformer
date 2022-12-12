@@ -181,7 +181,7 @@ class Exp_Main(Exp_Basic):
 
         return self.model
 
-    def test(self, setting, test=0):
+    def test(self, setting,folder_path, test=0):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
@@ -189,7 +189,6 @@ class Exp_Main(Exp_Basic):
 
         preds = []
         trues = []
-        folder_path = './test_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -244,22 +243,30 @@ class Exp_Main(Exp_Basic):
         print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results/' + setting + '/'
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
+  
 
         mae, mse, rmse, mape, mspe = metric(preds, trues)
-        print('mse:{}, mae:{}'.format(mse, mae))
-        f = open("result.txt", 'a')
+        print('mse:{}, mae:{},mape:{}'.format(mse, mae,mape))
+
+
+        f = open(os.path.join(folder_path , "result.txt"), 'a')
         f.write(setting + "  \n")
-        f.write('mse:{}, mae:{}'.format(mse, mae))
+        f.write('mae:{}'.format(mae))
+        f.write('\n')
+        f.write('mse:{}'.format(mse))
+        f.write('\n')
+        f.write('rmse:{}'.format(rmse))
+        f.write('\n')
+        f.write('mape:{}'.format(mape))
+        f.write('\n')
+        f.write('mspe:{}'.format(mspe))
         f.write('\n')
         f.write('\n')
         f.close()
 
-        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
-        np.save(folder_path + 'pred.npy', preds)
-        np.save(folder_path + 'true.npy', trues)
+        np.save(os.path.join(folder_path , 'metrics.npy'), np.array([mae, mse, rmse, mape, mspe]))
+        np.save(os.path.join(folder_path , 'pred.npy'), preds)
+        np.save(os.path.join(folder_path , 'true.npy'), trues)
 
         return
 

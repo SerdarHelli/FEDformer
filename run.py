@@ -24,6 +24,11 @@ def main():
     # supplementary config for FEDformer model
     parser.add_argument('--version', type=str, default='Fourier',
                         help='for FEDformer, there are two versions to choose, options: [Fourier, Wavelets]')
+
+   parser.add_argument('--result_path', type=str, required=True,
+                        help='Result Path')
+
+
     parser.add_argument('--mode_select', type=str, default='random',
                         help='for FEDformer, there are two mode selection method, options: [random, low]')
     parser.add_argument('--modes', type=int, default=64, help='modes to be selected random 64')
@@ -162,7 +167,7 @@ def main():
 
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        exp.test(setting, test=1)
+        exp.test(setting,folder_path=args.result_path, test=1)
         torch.cuda.empty_cache()
 
 
